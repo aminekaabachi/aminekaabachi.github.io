@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Jose M. Perez&#39;s Blog</title>
+  <subtitle>Web development, performance, and some other good practices.</subtitle>
+  <link href="/tag/performance/atom.xml" rel="self"/>
+  
+  <link href="https://jmperezperez.com/"/>
+  <updated>2020-09-24T22:03:29.920Z</updated>
+  <id>https://jmperezperez.com/</id>
+  
+  <author>
+    <name>Jose M. Perez</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>How to Estimate Web Performance Impact Before Making Fixes</title>
+    <link href="https://jmperezperez.com/assess-performance-impact/"/>
+    <id>https://jmperezperez.com/assess-performance-impact/</id>
+    <published>2020-03-14T06:15:00.000Z</published>
+    <updated>2020-09-24T22:03:29.920Z</updated>
+    
+    <content type="html"><![CDATA[<p>Web Performance is important for user experience and business metrics. Estimating its impact is key to be able to prioritize it, yet it’s difficult to quantify its benefits until the work has been done.</p>]]></content>
+    
+    <summary type="html">
+    
+      Learn about several ways of assessing the potential performance gains before implementing improvements. This will help building the case and prioritizing performance work.
+    
+    </summary>
+    
+    
+      <category term="performance" scheme="https://jmperezperez.com/tags/performance/"/>
+    
+  </entry>
+  
+</feed>
