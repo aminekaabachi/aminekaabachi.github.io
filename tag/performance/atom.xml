@@ -4,9 +4,9 @@
   <subtitle>Web development, performance, and some other good practices.</subtitle>
   <link href="/tag/performance/atom.xml" rel="self"/>
   
-  <link href="https://jmperezperez.com/"/>
+  <link href="https://kaabachi.io/"/>
   <updated>2020-09-24T22:03:29.920Z</updated>
-  <id>https://jmperezperez.com/</id>
+  <id>https://kaabachi.io/</id>
   
   <author>
     <name>Jose M. Perez</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>How to Estimate Web Performance Impact Before Making Fixes</title>
-    <link href="https://jmperezperez.com/assess-performance-impact/"/>
-    <id>https://jmperezperez.com/assess-performance-impact/</id>
+    <link href="https://kaabachi.io/assess-performance-impact/"/>
+    <id>https://kaabachi.io/assess-performance-impact/</id>
     <published>2020-03-14T06:15:00.000Z</published>
     <updated>2020-09-24T22:03:29.920Z</updated>
     
@@ -31,7 +31,7 @@
     </summary>
     
     
-      <category term="performance" scheme="https://jmperezperez.com/tags/performance/"/>
+      <category term="performance" scheme="https://kaabachi.io/tags/performance/"/>
     
   </entry>
   
