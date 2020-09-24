@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Jose M. Perez&#39;s Blog</title>
+  <title>Amine Kaabachi&#39;s Blog</title>
   
-  <subtitle>Web development, performance, and some other good practices.</subtitle>
+  
   <link href="/feed.xml" rel="self"/>
   
   <link href="https://kaabachi.io/"/>
@@ -10,7 +10,7 @@
   <id>https://kaabachi.io/</id>
   
   <author>
-    <name>Jose M. Perez</name>
+    <name>Amine Kaabachi</name>
     
   </author>
   
