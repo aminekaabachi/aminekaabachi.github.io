@@ -26,10 +26,9 @@
   "author": {
       "@type": "Person",
       "name": "{{ config.author }}",
-      "url": "https://jmperezperez.com",
+      "url": "https://kaabachi.io",
       "sameAs": [
-        "http://www.linkedin.com/in/jmperezperez",
-        "https://twitter.com/jmperezperez"
+        "http://www.linkedin.com/in/aminekaabachi",
       ]
   },
   "publisher": {
@@ -50,12 +49,12 @@
 
   <div class="media author">
     <div class="img">
-      <a href="/about-me/?ref=post-header">
-        <img src="https://res.cloudinary.com/jmperez/image/upload/w_120,f_auto,c_scale/v1519156883/profile_ysrm5y.jpg" class="avatar-img" alt="" height="53" width="53" sizes="53px">
+      <a href="#">
+        <img src="https://avatars0.githubusercontent.com/u/1732576?s=460&u=c7f050fcc3501a22aac1e1b6ac998cdf3ce6f9b1&v=4" class="avatar-img" alt="" height="53" width="53" sizes="53px">
       </a>
     </div>
     <div class="bd">
-      <address class="name" itemprop="author" itemscope itemtype="https://schema.org/Person"><a href="/about-me/" itemprop="name">José M. Pérez</a></address>
+      <address class="name" itemprop="author" itemscope itemtype="https://schema.org/Person"><a href="/about-me/" itemprop="name">Amine Kaabachi</a></address>
       <meta class="post-data" itemprop="datePublished" content="{{ page.date.toISOString() }}">
           {{ date(page.date, 'MMMM D, YYYY') }}
       </meta><span style="margin:0 .5rem;display:inline-block">|</span> Reading Time: ~<time>{{ readingTime(page.content, 'mins', 200) }}</time>

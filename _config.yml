@@ -3,16 +3,16 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Jose M. Perez's Blog
-subtitle: Web development, performance, and some other good practices.
-description: I am a software engineer who loves web development. Speaker and open-source contributor.
-author: Jose M. Perez
+title: Amine Kaabachi's Blog
+subtitle: 
+description: 
+author: Amine Kaabachi
 language: en
 ? timezone
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://jmperezperez.com
+url: https://kaabachi.io
 root: /
 permalink: :title/
 permalink_defaults: :title/
@@ -72,7 +72,7 @@ theme: jmperez
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@github.com:JMPerez/jmperez.github.com.git
+  repo: https://github.com/aminekaabachi/aminekaabachi.github.io.git
   branch: master
 
 # Quick start Settings of hexo-amp-generator

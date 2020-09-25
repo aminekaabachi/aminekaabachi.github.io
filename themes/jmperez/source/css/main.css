@@ -74,14 +74,14 @@ twitterwidget {
 }
 
 a {
-  color: #2a7cb2;
+  color: #07689f;
   font-weight: inherit;
   text-decoration: none;
   transition: color 0.15s ease-out, border-bottom-color 0.15s ease-out;
 }
 
 a:hover {
-  color: #2a7cb2;
+  color: #07689f;
 }
 
 abbr {
@@ -213,7 +213,7 @@ code {
 /*--HEADER--*/
 
 .main-header {
-  background-color: #005689;
+  background-color: #ff8e6e;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   overflow: hidden;
   margin-bottom: 1.5rem;
@@ -690,17 +690,17 @@ figcaption {
 
 @media (prefers-color-scheme: dark) {
   body {
-    background: #38444c;
+    background: #515070;
     color: #eee;
   }
   a {
-    color: #9dcae8;
+    color: #ffbb91;
   }
   a:hover {
     color: #fff;
   }
   p a {
-    border-bottom: 1px solid #6d7a82;
+    border-bottom: 1px solid #ffbb91;
   }
   p a:hover {
     border-bottom: 1px solid #fff;
@@ -717,17 +717,17 @@ figcaption {
   a:hover h3,
   a:hover h4,
   a:hover h5 {
-    color: #4b89b1;
+    color: #ffbb91;
   }
   .button:hover {
-    background-color: #4b89b1;
+    background-color: #ffbb91;
   }
   code,
   pre {
     color: #ddd;
   }
   .main-header {
-    background-color: #4b89b1;
+    background-color: #ff8e6e;
   }
   .read-next {
     background-color: #020915;

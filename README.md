@@ -1,6 +1,6 @@
-# JMPerez Blog
+# Kaabachi Blog
 
-This is the source code for my blog [jmperezperez.com](https://jmperezperez.com). It uses [Hexo](https://hexo.io) to generate static pages.
+This is the source code for my blog. Forked from [jmperezperez.com](https://jmperezperez.com). It uses [Hexo](https://hexo.io) to generate static pages.
 
 These are some interesting features:
 
