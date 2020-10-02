@@ -34,8 +34,8 @@
 			    "@type":"WebPage",
 			    "@id":"building-python-sdk-for-azure-databricks/"
 			},
-			"datePublished": "2020-10-03T07:00:00.000Z",
-			"dateModified": "2020-10-02T09:03:37.879Z",
+			"datePublished": "2020-10-02T07:00:00.000Z",
+			"dateModified": "2020-10-02T09:37:40.020Z",
 			
 			"image": {
 				"@type": "ImageObject",
@@ -857,8 +857,8 @@ figcaption {
           </div>
           <div class="bd">
             <address class="name" itemprop="author" itemscope itemtype="https://schema.org/Person"><a href="#" itemprop="name">Amine Kaabachi</a></address>
-            <meta class="post-data" itemprop="datePublished" content="2020-10-03T07:00:00.000Z">
-              October 03 2020
+            <meta class="post-data" itemprop="datePublished" content="2020-10-02T07:00:00.000Z">
+              October 02 2020
           </div>
         </div>
 
@@ -967,7 +967,7 @@ jobs:
         run: |
           coveralls
 
-</code></pre><p>I used <a href="https://docs.pytest.org/en/stable/contents.html" target="_blank" rel="noopener">pytest</a> and <a href="https://coveralls.io/" target="_blank" rel="noopener">coveralls</a> for the two steps. Env variables for my Azure Databricks test workspaces are provided and the values are aggregated from <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets" target="_blank" rel="noopener">Github repo secrets</a>.</p><p>I also included a workflow to automatically publish the package when a release is make:</p><pre class=" language-yml"><code class="language-yml">name: Publish to PyPI
+</code></pre><p>I used <a href="https://docs.pytest.org/en/stable/contents.html" target="_blank" rel="noopener">pytest</a> and <a href="https://coveralls.io/" target="_blank" rel="noopener">coveralls</a> for the two steps. Env variables for my Azure Databricks test workspaces are provided and the values are aggregated from <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets" target="_blank" rel="noopener">Github repo secrets</a>.</p><p>I also included a workflow to automatically publish the package when a release is made:</p><pre class=" language-yml"><code class="language-yml">name: Publish to PyPI
 
 on:
   release:
