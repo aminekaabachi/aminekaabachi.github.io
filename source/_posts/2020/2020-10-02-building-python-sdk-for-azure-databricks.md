@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Building a Python SDK for Azure Databricks
-date: 2020-10-03 10:00:00+01:00
+date: 2020-10-02 10:00:00+01:00
 description: This article is about an open source Python SDK for Azure Databricks. It will present the  project. The progress of the current release  but also design choices and the overall dev process / tools.
 image:
   url: /assets/images/posts/sdk-databricks/feature.png
@@ -303,7 +303,7 @@ jobs:
 
 I used [pytest](https://docs.pytest.org/en/stable/contents.html) and [coveralls](https://coveralls.io/) for the two steps. Env variables for my Azure Databricks test workspaces are provided and the values are aggregated from [Github repo secrets](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets).
 
-I also included a workflow to automatically publish the package when a release is make:
+I also included a workflow to automatically publish the package when a release is made:
 
 ```yml
 name: Publish to PyPI
