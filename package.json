@@ -9,7 +9,7 @@
     "clean-css": "^4.2.1",
     "hexo": "^3.8.0",
     "hexo-deployer-git": "^0.3.1",
-    "hexo-generator-amp": "git+https://github.com/tea3/hexo-generator-amp.git",
+    "hexo-generator-amp": "^3.2.0",
     "hexo-generator-index": "^0.2.1",
     "hexo-generator-tag": "^0.2.0",
     "hexo-html-minifier": "0.0.2",

@@ -54,7 +54,7 @@
       </a>
     </div>
     <div class="bd">
-      <address class="name" itemprop="author" itemscope itemtype="https://schema.org/Person"><a href="/about-me/" itemprop="name">Amine Kaabachi</a></address>
+      <address class="name" itemprop="author" itemscope itemtype="https://schema.org/Person"><a href="#" itemprop="name">Amine Kaabachi</a></address>
       <meta class="post-data" itemprop="datePublished" content="{{ page.date.toISOString() }}">
           {{ date(page.date, 'MMMM D, YYYY') }}
       </meta><span style="margin:0 .5rem;display:inline-block">|</span> Reading Time: ~<time>{{ readingTime(page.content, 'mins', 200) }}</time>

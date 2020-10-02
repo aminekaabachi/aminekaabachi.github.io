@@ -63,18 +63,6 @@ time_format: HH:mm:ss
 per_page: 10
 pagination_dir: page
 
-# Extensions
-## Plugins: https://hexo.io/plugins/
-## Themes: https://hexo.io/themes/
-theme: jmperez
-
-# Deployment
-## Docs: https://hexo.io/docs/deployment.html
-deploy:
-  type: git
-  repo: https://github.com/aminekaabachi/aminekaabachi.github.io.git
-  branch: master
-
 # Quick start Settings of hexo-amp-generator
 generator_amp:
   cssFilePath: ../jmperez/source/css/main.css
@@ -90,6 +78,19 @@ generator_amp:
     height: 800
   google_analytics: UA-39254352-1
   warningLog: false
+  
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+theme: jmperez
+
+# Deployment
+## Docs: https://hexo.io/docs/deployment.html
+deploy:
+  type: git
+  repo: https://github.com/aminekaabachi/aminekaabachi.github.io.git
+  branch: master
+
 
 marked:
   breaks: false
