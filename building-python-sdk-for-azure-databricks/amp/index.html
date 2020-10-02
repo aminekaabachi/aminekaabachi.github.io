@@ -1,0 +1,1019 @@
+<!doctype html>
+<html ⚡>
+  <head>
+    <meta charset="utf-8">
+    <link rel="canonical" href="https://kaabachi.io/building-python-sdk-for-azure-databricks/" >
+    <title>Building a Python SDK for Azure Databricks - </title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="Building a Python SDK for Azure Databricks - José M. Pérez" property="og:title">
+		<meta name="twitter:description" content="This article is about an open source Python SDK for Azure Databricks. It will present the  project. The progress of the current release  but also design choices and the overall dev process / tools." property="og:description">
+		<meta name="twitter:site" content="@jmperezperez">
+		
+		<meta property="og:image" content="https://kaabachi.io/assets/images/posts/sdk-databricks/feature.png">
+		<meta name="twitter:image" content="https://kaabachi.io/assets/images/posts/sdk-databricks/feature.png">
+		
+    <noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    
+    <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
+    
+    <script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+    
+
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script type="application/ld+json">
+		{
+			"@context": "http://schema.org",
+			"@type": "BlogPosting",
+			"headline": "Building a Python SDK for Azure Databricks",
+			
+			"description": "This article is about an open source Python SDK for Azure Databricks. It will present the  project. The progress of the current release  but also design choices and the overall dev process / tools.",
+			
+			"mainEntityOfPage":{
+			    "@type":"WebPage",
+			    "@id":"building-python-sdk-for-azure-databricks/"
+			},
+			"datePublished": "2020-10-03T07:00:00.000Z",
+			"dateModified": "2020-10-02T09:03:37.879Z",
+			
+			"image": {
+				"@type": "ImageObject",
+				"url": "https://kaabachi.io/assets/images/posts/sdk-databricks/feature.png",
+				"width" : "1352",
+				"height" : "802"
+			},
+			
+			"author": {
+			    "@type": "Person",
+			    "name": "Amine Kaabachi"
+			},
+			"publisher": {
+			    "@type": "Organization",
+			    "name": "Amine Kaabachi&#39;s Blog"
+			    
+			    ,
+			    "logo": {
+			      "@type": "ImageObject",
+			      "url": "https://kaabachi.io/amp-dist/logo.png",
+			      "width": 600,
+			      "height": 60
+			    }
+			    
+			}
+		}
+	</script>
+	<style amp-custom>
+		
+			/*--RESET--*/
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: none;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+input,
+button {
+  background: none;
+}
+
+html {
+  font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/*--BODY--*/
+
+body {
+  background: #fff;
+  color: #555;
+  font-family: Georgia, Times;
+  font-weight: 300;
+  font-style: normal;
+  line-height: 1.5rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%; /* fixes a too large font issue in horizontally scrollable <pre> on webkit */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #212121;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  line-height: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+#menu a,
+.button {
+  font-size: 1em;
+  font-weight: 400;
+}
+
+p,
+.post ul,
+.post ol,
+iframe,
+video,
+amp-video,
+amp-vimeo,
+amp-youtube {
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+twitterwidget {
+  margin-bottom: 1em ;
+}
+
+a {
+  color: #07689f;
+  font-weight: inherit;
+  text-decoration: none;
+  transition: color 0.15s ease-out, border-bottom-color 0.15s ease-out;
+}
+
+a:hover {
+  color: #07689f;
+}
+
+abbr {
+  border-bottom: 1px dashed #ccc;
+  text-decoration: none;
+}
+
+p a {
+  border-bottom: 1px solid #eee;
+}
+
+p a:hover {
+  border-bottom-color: #212121;
+}
+
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+h1 {
+  font-size: 1.7rem;
+}
+
+h2 {
+  color: #444;
+  display: inline-block;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin-top: 1rem;
+}
+
+h3 {
+  color: #666;
+  display: inline-block;
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-top: 1rem;
+}
+
+h4 {
+  font-size: 1.18rem;
+}
+
+h5 {
+  font-size: 1rem;
+}
+
+a h1,
+a h2,
+a h3,
+a h4,
+a h5 {
+  transition: color 0.15s ease-out;
+}
+
+a:hover h1,
+a:hover h2,
+a:hover h3,
+a:hover h4,
+a:hover h5 {
+  color: #3498db;
+}
+
+.quote {
+  margin: 0 0 15px 0;
+}
+
+blockquote {
+  border-left: 2px solid #ccc;
+  font-style: italic;
+  margin: 0 0 15px 0;
+  padding-left: 20px;
+}
+
+ul,
+ol {
+  margin: 0 0 15px 0;
+  padding-left: 25px;
+}
+
+ul {
+  list-style: square;
+}
+
+ol {
+  list-style: decimal;
+}
+
+hr {
+  background: #eee;
+  color: #eee;
+  clear: both;
+  display: block;
+  height: 2px;
+  margin: 30px auto;
+  width: 50%;
+}
+
+pre,
+code {
+  color: #333;
+  font-family: Courier, Menlo, Monaco;
+  font-size: 0.8em;
+  letter-spacing: 0px;
+  overflow-x: auto;
+}
+
+pre {
+  padding: 0.8em 1em;
+  white-space: pre-wrap;
+}
+
+code {
+  margin: 0;
+}
+
+/*--CLEARFIXES--*/
+
+.post::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+
+/*--HEADER--*/
+
+.main-header {
+  background-color: #ff8e6e;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+/*--MENU--*/
+
+#menu {
+  display: inline-block;
+  line-height: 2rem;
+}
+
+#menu a {
+  color: #fff;
+  font-size: 0.9rem;
+  margin-left: 1rem;
+  padding: 1rem 0.5rem;
+  text-transform: uppercase;
+}
+
+@media (max-width: 500px) {
+  #menu a {
+    margin-left: 0.5rem;
+    padding: 0.5rem 0.25rem;
+  }
+}
+
+#menu a:first-child {
+  margin-left: 0;
+}
+
+#menu a[aria-current] {
+  font-weight: bold;
+}
+
+/*--PAGE--*/
+
+#page {
+  margin: 0 auto;
+  max-width: 41rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  position: relative;
+}
+
+.videoWrapper {
+  height: 0;
+  margin-bottom: 1em;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  position: relative;
+}
+
+.videoWrapper iframe,
+.videoWrapper amp-youtube {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+/*--WRAPPER--*/
+
+.wrapper {
+  border-top: 2px solid #eee;
+  padding-top: 2rem;
+}
+
+.wrapper:first-child {
+  border-top: none;
+  padding-top: 1rem;
+}
+
+.posts-list h2 {
+  margin-top: 0;
+}
+
+/*--POSTS--*/
+
+.post {
+  display: block;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.post div[itemprop="articleBody"] > p:first-child {
+  color: #333;
+}
+
+.post li {
+  margin-bottom: 0.5rem;
+}
+
+.post p + img {
+  margin-bottom: 1rem;
+}
+
+.post p img {
+  border: 1px solid #eee;
+  display: block;
+  max-width: 100%;
+}
+
+.post img + .caption,
+.post img + figcaption {
+  padding-top: 0.5rem;
+}
+
+.post .svg-container {
+  margin-bottom: 5%;
+  max-width: 100%;
+  text-align: center;
+}
+
+figure {
+  padding-bottom: 1em;
+}
+
+video {
+  height: auto;
+  max-width: 100%;
+}
+
+.post .svg-container object {
+  width: 100%;
+}
+
+.tag-list {
+  display: inline-block;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 1rem;
+}
+
+.tag-list-item {
+  display: inline-block;
+  margin-left: 0.8em;
+}
+
+/*--PAGINATION--*/
+
+.pagination {
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
+.pagination a {
+  min-width: 30px;
+  max-height: 30px;
+  text-align: center;
+}
+
+/*--FOOTER--*/
+
+footer {
+  border-top: 1px dashed #ddd;
+  padding: 2em;
+  text-align: center;
+}
+
+.timing-stats {
+  font-size: 0.7em;
+  padding: 0.35em;
+}
+
+/*--BUTTONS--*/
+
+.button {
+  background-color: #fff;
+  border: 1px solid #555;
+  border-radius: 2rem;
+  color: #555;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.15s ease-out;
+}
+
+.button:hover {
+  background-color: #3498db;
+  border-color: transparent;
+  color: #fff;
+}
+
+.button.inactive {
+  background-color: #ccc;
+  color: #fff;
+}
+
+/*--404--*/
+.search-goog input {
+  border: 2px solid #ddd;
+  padding: 10px;
+}
+
+.search-goog input[type="submit"] {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  /*--PAGE--*/
+
+  #page,
+  .wrapper {
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /*--WRAPPER--*/
+
+  .wrapper {
+    padding-top: 2rem;
+  }
+
+  .wraper::after {
+    clear: both;
+    content: "";
+    display: block;
+  }
+}
+
+/*--ACCESSIBILITY--*/
+.outscreen {
+  height: 1px;
+  left: -1000px;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px;
+}
+
+/*--CALLOUT--*/
+.callout {
+  border: 1px solid #eee;
+  border-left-color: #777;
+  border-left-width: 5px;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.author {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.author .name {
+  line-height: 1rem;
+  padding-top: 0.5rem;
+}
+
+.media,
+.bd {
+  overflow: hidden;
+  _overflow: visible;
+  
+}
+
+.media .img {
+  float: left;
+}
+
+.avatar-img {
+  border-radius: 100%;
+  height: 3rem;
+  margin-right: 0.5rem;
+  width: 3rem;
+}
+
+/* SYNTAX HIGHLIGHTING */
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #393a34;
+  font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier,
+    monospace;
+  direction: ltr;
+  text-align: left;
+  white-space: pre-wrap;
+  word-spacing: normal;
+  word-break: normal;
+  font-size: 0.85em;
+  line-height: 1.2em;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection,
+pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection,
+code[class*="language-"] ::-moz-selection {
+  background: #b3d4fc;
+}
+
+pre[class*="language-"]::selection,
+pre[class*="language-"] ::selection,
+code[class*="language-"]::selection,
+code[class*="language-"] ::selection {
+  background: #b3d4fc;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+  border: 1px solid #dddddd;
+  background-color: white;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: 0.2em;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  background: #f8f8f8;
+  border: 1px solid #dddddd;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #999988;
+  font-style: italic;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.string,
+.token.attr-value {
+  color: #e3116c;
+}
+.token.punctuation,
+.token.operator {
+  color: #393a34; /* no highlight */
+}
+
+.token.entity,
+.token.url,
+.token.symbol,
+.token.number,
+.token.boolean,
+.token.variable,
+.token.constant,
+.token.property,
+.token.regex,
+.token.inserted {
+  color: #005cc5;
+}
+
+.token.keyword {
+  color: #d73a49;
+}
+
+.token.atrule,
+.token.attr-name {
+  color: #6f42c1;
+}
+
+.token.function,
+.token.deleted {
+  color: #6f42c1;
+}
+
+.token.selector {
+  color: #00009f;
+}
+
+.token.tag {
+  color: #22863a;
+}
+
+.token.class-name {
+  color: #6f42c1;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.caption,
+figcaption {
+  display: block;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.codepen-aspect-ratio > iframe {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.twitter-tweet {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.twitter-tweet::after {
+  content: "";
+  display: block;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.me {
+  max-width: 22rem;
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+.me > div {
+  height: 8rem;
+  margin: 0 auto;
+  position: relative;
+  width: 8rem;
+}
+
+.me svg {
+  border-radius: 100%;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.me img {
+  border-radius: 100%;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.me h1 {
+  font-size: 1.7rem;
+  line-height: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.read-next {
+  background-color: #fdf6ea;
+  margin: 2rem 0;
+  padding: 1em;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #515070;
+    color: #eee;
+  }
+  a {
+    color: #ffbb91;
+  }
+  a:hover {
+    color: #fff;
+  }
+  p a {
+    border-bottom: 1px solid #ffbb91;
+  }
+  p a:hover {
+    border-bottom: 1px solid #fff;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    color: #eee;
+  }
+  a:hover h1,
+  a:hover h2,
+  a:hover h3,
+  a:hover h4,
+  a:hover h5 {
+    color: #ffbb91;
+  }
+  .button:hover {
+    background-color: #ffbb91;
+  }
+  code,
+  pre {
+    color: #ddd;
+  }
+  .main-header {
+    background-color: #ff8e6e;
+  }
+  .read-next {
+    background-color: #020915;
+  }
+}
+
+.amp-img-wrapper {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+#hexo-amp-id-1{position:relative;padding-bottom:62.25%}#hexo-amp-id-2{position:relative;margin:10% 0 0 0;padding-bottom:40.25%}#hexo-amp-id-3{position:relative;margin:10% 0 20% 0;padding-bottom:92%}#hexo-amp-id-4{text-align: center}
+		
+		amp-iframe {
+			margin-bottom: 10px;
+		}
+	</style>
+  </head>
+  <body>
+
+  	<!-- google analytics -->
+  	
+  	<amp-analytics type="googleanalytics" id="google-analytics">
+		<script type="application/json">
+		{
+		  "vars": {
+		    "account": "UA-39254352-1"
+		  },
+		  "triggers": {
+		    "trackPageview": {
+		      "on": "visible",
+		      "request": "pageview"
+		    }
+		  }
+		}
+		</script>
+	</amp-analytics>
+	
+
+  <header class="main-header">
+      <nav id="menu">
+          <a href="/">kaabachi.io</a>
+          <a href="#">Blog</a>
+          <a href="#">Projects</a>
+          <a href="#">About</a>
+      </nav>
+  </header>
+
+  <article>
+  	<div class="post">
+	  	<div id="page">
+
+		    <article id="post-building-python-sdk-for-azure-databricks" class="post wrapper">
+
+        <div class="media author">
+          <div class="img">
+            <a href="/">
+              <amp-img src="https://avatars0.githubusercontent.com/u/1732576?s=460&u=c7f050fcc3501a22aac1e1b6ac998cdf3ce6f9b1&v=4" class="avatar-img" alt="" height="53" width="53">
+            </a>
+          </div>
+          <div class="bd">
+            <address class="name" itemprop="author" itemscope itemtype="https://schema.org/Person"><a href="#" itemprop="name">Amine Kaabachi</a></address>
+            <meta class="post-data" itemprop="datePublished" content="2020-10-03T07:00:00.000Z">
+              October 03 2020
+          </div>
+        </div>
+
+				<!-- entry title -->
+				<header class="entry-header">
+					
+					  <h1 class="article-title entry-title" itemprop="name">
+					    Building a Python SDK for Azure Databricks
+					  </h1>
+					
+				</header>
+
+				<!-- entry content -->
+			    <div class="entry-content ecp">
+			  		<p>This article is about a new project I started to work on lately. Please welcome <a href="https://azure-databricks-sdk-python.readthedocs.io/en/latest/" target="_blank" rel="noopener">Azure Databricks SDK Python</a>. As it&#x2019;s shining through the name &#x1F984;, It is a high-quality Python SDK for Azure Databricks REST API 2.0.</p><div id="hexo-amp-id-1"><div class="amp-img-wrapper"><amp-img src="/assets/images/posts/sdk-databricks/feature.png" width="1352" height="802" layout="responsive"></amp-img></div></div><p>This article will present the project, the current progress, release plan, some design choices, and at final dev process/tools.</p><a id="more"></a><p>I spent several nights working and searching for best practices to implement this SDK. I am convinced that It will need more than my humble efforts to become stable and usable in production. Therefore, my friends, all contributions are welcome! Do not hesitate to reach to me if you want to contribute by any means (docs, code, testing, etc).</p><h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation "></a>Motivation</h2><p>I will start by my own use-cases:</p><ul><li><p><strong><em>Mix and match</em></strong>: When working on a competitive field, you will have to cope with having new tools and platforms popping out from nowhere. I like to have simple means to mix my most-used tools with the brand-new ones. Using APIs to integrate directly is time-consuming, which leads in most cases to hacks and error-prone automation.</p></li><li><p><strong><em>Keeping evolving</em></strong>: Usually, the ecosystem does not integrate the preview features. For example, Data Factory still does not include the docker options (DCS) when creating a cluster in the Databricks activity. Sometimes, you need to force the update. An SDK could be very useful to build custom connectors.</p></li><li><p><strong><em>Custom bricks</em></strong>: You want to build on top of Azure Databricks: let&#x2019;s imagine You have a great idea that you must prototype as fast as you can, for a startup or a hackathon. If some of its blocks could be done by Azure Databricks, an SDK will help you do it in no time. You will be able to bundle everything in your app or package (et voil&#xE0; !).</p></li></ul><p>I think It&#x2019;s plenty to justify the need. Nonetheless, I am quite sure there should be additional use-cases. I&#x2019;ll be excited to hear yours in the comments (on medium).</p><h2 id="Specs"><a href="#Specs" class="headerlink" title="Specs"></a>Specs</h2><p>I want to create an SDK with he following features:</p><ul><li>Clear standard to access to APIs (e.g. through a client).</li><li>Contains custom types for the API results and requests.</li><li>Support for Personal Access token authentification.</li><li>Support for Azure AD authentification.</li><li>Support for the use of Azure AD service principals.</li><li>Allows free-style API calls with a force mode (bypass types validation).</li><li>Error handeling and proxy support.</li></ul><p>In a nutshell, it should support all available authentification methods and manage operations on Azure Databricks through type objects. It should have simple methods to access results (no .get() hell) but also keep the possibility for free-style API calls.</p><p>By the way, I looked at other trials on doing this. Some projects use the underlying packages from <code>databricks-cli</code> which I think is a genuine idea. For the fun of it, I wanted to do it from scratch, but also because it should give more flexibility in the future.</p><h2 id="Demo-Implementation-Progress"><a href="#Demo-Implementation-Progress" class="headerlink" title="Demo / Implementation Progress "></a>Demo / Implementation Progress</h2><p>This part contains details about the current release, usage demo, and the release plan.</p><h3 id="Current-release"><a href="#Current-release" class="headerlink" title="Current release"></a>Current release</h3><p>Current release is v0.0.2. As of this version here is the implementation progress:</p><ul><li>&#x2714; Authentification</li><li>&#x2714; Custom types (25%)</li><li>&#x2714; API Wrappers (25%)</li><li>&#x2714; Error handling (80%)</li><li>&#x2717; Proxy support (0%)</li><li>&#x2714; Documentation (20%)</li></ul><p>The following API wrappers are now fully implemented and tested:</p><ul><li>&#x2714; Clusters</li><li>&#x2714; Secrets</li><li>&#x2714; Tokens</li></ul><h3 id="Usage-demo"><a href="#Usage-demo" class="headerlink" title="Usage demo"></a>Usage demo</h3><p>Here is a demo from the <a href="https://azure-databricks-sdk-python.readthedocs.io/en/latest/user/quickstart.html" target="_blank" rel="noopener">SDK Quickstart Guide</a>:</p><blockquote><p>Begin by importing the <code>clients.Client</code> class from SDK module.</p></blockquote><pre class=" language-python"><code class="language-python"><span class="token keyword">from</span> azure_databricks_sdk_python <span class="token keyword">import</span> Client
+</code></pre><blockquote><p>You can now instantiate a client object. You need to pass the databricks instance (format: adb-<xxx>.<x>.azuredatabricks.net) and your token:</x></xxx></p></blockquote><pre class=" language-python"><code class="language-python">client <span class="token operator">=</span> Client<span class="token punctuation">(</span>databricks_instance<span class="token operator">=</span><span class="token operator">&lt;</span>instance<span class="token operator">&gt;</span><span class="token punctuation">,</span> personal_access_token<span class="token operator">=</span><span class="token operator">&lt;</span>token<span class="token operator">&gt;</span><span class="token punctuation">)</span>
+</code></pre><blockquote><p>You can create a new cluster using the following:</p></blockquote><pre class=" language-python"><code class="language-python">cluster <span class="token operator">=</span> client<span class="token punctuation">.</span>tokens<span class="token punctuation">.</span>create<span class="token punctuation">(</span>attributes<span class="token punctuation">)</span>
+</code></pre><blockquote><p><code>attributes</code> are instance of <code>types.clusters.ClusterAttributes</code>. So before creating a cluster you need to create define its attributes. Here is an example:</p></blockquote><pre class=" language-python"><code class="language-python">attributes <span class="token operator">=</span> ClusterAttributes<span class="token punctuation">(</span>cluster_name<span class="token operator">=</span><span class="token string">&quot;my-cute-cluster&quot;</span><span class="token punctuation">,</span> 
+                                spark_version<span class="token operator">=</span><span class="token string">&quot;7.2.x-scala2.12&quot;</span><span class="token punctuation">,</span>
+                                node_type_id<span class="token operator">=</span><span class="token string">&quot;Standard_F4s&quot;</span><span class="token punctuation">,</span> 
+                                autoscale<span class="token operator">=</span>autoscale<span class="token punctuation">)</span>
+</code></pre><blockquote><p>Now <code>create</code> will return an instance of <code>types.clusters.ClusterInfo</code>. You can access it&#x2019;s properties through dot chainin, for example:</p></blockquote><pre class=" language-python"><code class="language-python">cluster<span class="token punctuation">.</span>cluster_id
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span>  <span class="token string">&apos;0918-220215-atria616&apos;</span>
+</code></pre><h3 id="Release-plan"><a href="#Release-plan" class="headerlink" title="Release plan"></a>Release plan</h3><p>The release plan for the next versions (<code>v0.0.3</code> and <code>v0.0.4</code>) will be as follows. I will be focusing on <code>v0.0.3</code>, hence contributors can start working on <code>v0.0.4</code> if they are interested.</p><ul><li><strong><em>v0.0.3</em></strong>: Jobs, Groups.</li><li><strong><em>v0.0.4</em></strong>: DBFS, Libraries, Workspaces.</li></ul><p>They should be released in few weeks from now. The goal is to reach a first stable version v0.1.0 this year.</p><h2 id="Internals-amp-Design-Choices"><a href="#Internals-amp-Design-Choices" class="headerlink" title="Internals &amp; Design Choices"></a>Internals &amp; Design Choices</h2><p>These choices here should help gain time for change and extension. I think laziness is a good motive, although implicitly pejorative, it is the abstract for some of the software engineering principles (e.g. reuse). To note that extension of the SDK is done through two operations: an API change or addition of an authentification method.</p><h3 id="Drafting"><a href="#Drafting" class="headerlink" title="Drafting"></a>Drafting</h3><p>The fundamental idea of this SDK is to have a Client object as main interface. It encapsulates API wrappers: e.i. It means that you can call clusters API through <code>client.clusters.create(...)</code>.</p><div id="hexo-amp-id-2"><div class="amp-img-wrapper"><amp-img src="/assets/images/posts/sdk-databricks/sdktarget.png" width="681" height="245" layout="responsive"></amp-img></div></div><center><u>Figure 1: Three-tier architecture class diagram.</u></center><p><br></p><p>At first, I imagined a three-tier architecture:</p><ul><li><strong><em>White layer</em></strong>: The main interface that handles the configuration and abstracts the calls to the API wrappers (by aggregating them).</li><li><strong><em>Green layer</em></strong>: The API wrappers. Also, the type packages that include models for requests and responses from different endpoints.</li><li><strong><em>Yellow layer</em></strong>: Generic API helpers like functions that do HTTP get and post requests, and also HTTP error handlers.</li></ul><p>To test this architecture, I asked two questions:</p><ul><li><p><em>What do I need to change if I add a new authentification method ?</em> : In this case, I will need to modify the Client class and the API class. The change can lead (Murphy&#x2019;s law) to regression in the SDK. This constraint can be relaxed with a fair amount of tests. Still, It may lead (Murphy&#x2019;s law again) to breaking the <abbr title="Open-Closed Principle">OCP</abbr> once multiple versions accumulate because keeping consistency through versions with one class and stacking implementations is one of the worst practices in dev.</p></li><li><p><em>What do I need to change if I add a new API wrapper ?</em> : In this case, I need to modify the Client class too. The main issue here is that Client class is getting many responsibilities: configuration, the aggregation of API wrappers, etc. You can see that It breaks the <abbr title="Single Responsibility Principle">SRP</abbr> this time (no Murphies needed).</p></li></ul><p>Finally, It was time to for solutions: I tried my best. Still, much refactoring and evaluation are needed to improve the SDK quality. If you got ideas to improve the current solution or have a completely different way that can help in the long run, please get in touch.</p><h3 id="Designing"><a href="#Designing" class="headerlink" title="Designing"></a>Designing</h3><p>I like LEGO&#xAE;. I also think that LEGO&#xAE; makes good metamodels for programming. LEGO&#xAE; is a master of <abbr title="Single Responsibility Principle">SRP</abbr> through its tiny blocks. Inspired, I tried to form a new solution by separating responsibilities in my layers.</p><div id="hexo-amp-id-3"><div class="amp-img-wrapper"><amp-img src="/assets/images/posts/sdk-databricks/sdkfull.png" width="681" height="738" layout="responsive"></amp-img></div></div><center><u>Figure 1: <s>Unscientific</s> multitier architecture class diagram.</u></center><p><br></p><p>I started by introducing these changes:</p><ul><li><p><strong><em>White layer</em></strong>: The main interface now is just a Factory: i.e. It instantiates childs of BaseClient that now construct the purple layer.</p></li><li><p><strong><em>Purple layer</em></strong>: It handles the configuration for each auth method. If I add a new auth method, the existing ones are not affected. The aggregation with API wrappers is delegated (through composition) to a single responsibility class called Composer.</p></li><li><p><strong><em>Green layer</em></strong>: The green layer API wrappers all aggregate in a Composer class. It frees the purples to handle only configuration logic.</p></li><li><p><strong><em>Yellow layer</em></strong>: The yellow layer is now divided into a Factory API class and separate classes that handle generic and specific HTTP operations based on the auth method.</p></li></ul><p>As for changes, minimal additions are now needed for the usual extension use-case. It seems to be a good start for now.</p><h3 id="Implementing"><a href="#Implementing" class="headerlink" title="Implementing"></a>Implementing</h3><p>Apart from abstract design choices, the one thing I hate the most in dealing with raw APIs is what I call &#x201C;.get() hell&#x201D;. Typing, is a powerful concept. When dealing with APIs it helps a big deal. However, the challenge is the following. Azure Databricks API data structures are usually trees of basic types. You can find up to 3 or 4 layers deep. This makes the job of parsing input and output in order to return and accept custom type objects a challenging task.</p><p>Here are the two libs that made it very easy to solve this challenge:</p><ul><li><p><a href="https://www.attrs.org/en/stable/" target="_blank" rel="noopener"><code>attrs</code></a>: package that will bring back the joy of writing classes by relieving you from the drudgery of implementing object protocols (aka dunder methods). This was useful mainly for Type Annotations.</p></li><li><p><a href="https://github.com/Tinche/cattrs" target="_blank" rel="noopener"><code>cattrs</code></a> is an open source Python library for structuring and unstructuring data. cattrs works best with attrs classes and the usual Python collections, but other kinds of classes are supported by manually registering converters.</p></li></ul><p>Let&#x2019;s look at an example that uses attrs and cattrs:</p><pre class=" language-python"><code class="language-python">
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> <span class="token keyword">from</span> enum <span class="token keyword">import</span> unique<span class="token punctuation">,</span> Enum
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> <span class="token keyword">from</span> typing <span class="token keyword">import</span> List<span class="token punctuation">,</span> Optional<span class="token punctuation">,</span> Sequence<span class="token punctuation">,</span> Union
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> <span class="token keyword">from</span> cattr <span class="token keyword">import</span> structure<span class="token punctuation">,</span> unstructure
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> <span class="token keyword">import</span> attr
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span>
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> @unique
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">class</span> <span class="token class-name">CatBreed</span><span class="token punctuation">(</span>Enum<span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     SIAMESE <span class="token operator">=</span> <span class="token string">&quot;siamese&quot;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     MAINE_COON <span class="token operator">=</span> <span class="token string">&quot;maine_coon&quot;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     SACRED_BIRMAN <span class="token operator">=</span> <span class="token string">&quot;birman&quot;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> @attr<span class="token punctuation">.</span>s
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">class</span> <span class="token class-name">Cat</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     breed<span class="token punctuation">:</span> CatBreed <span class="token operator">=</span> attr<span class="token punctuation">.</span>ib<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     names<span class="token punctuation">:</span> Sequence<span class="token punctuation">[</span>str<span class="token punctuation">]</span> <span class="token operator">=</span> attr<span class="token punctuation">.</span>ib<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> @attr<span class="token punctuation">.</span>s
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">class</span> <span class="token class-name">DogMicrochip</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     chip_id <span class="token operator">=</span> attr<span class="token punctuation">.</span>ib<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     time_chipped<span class="token punctuation">:</span> float <span class="token operator">=</span> attr<span class="token punctuation">.</span>ib<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> @attr<span class="token punctuation">.</span>s
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">class</span> <span class="token class-name">Dog</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     cuteness<span class="token punctuation">:</span> int <span class="token operator">=</span> attr<span class="token punctuation">.</span>ib<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     chip<span class="token punctuation">:</span> Optional<span class="token punctuation">[</span>DogMicrochip<span class="token punctuation">]</span> <span class="token operator">=</span> attr<span class="token punctuation">.</span>ib<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+</code></pre><p>Note that <strong>init</strong> methods (and more) for the @attr.s are automatically generated. Now we can convert to and from these models using unstructure and structure functions.</p><pre class=" language-python"><code class="language-python">
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> p <span class="token operator">=</span> unstructure<span class="token punctuation">(</span><span class="token punctuation">[</span>Dog<span class="token punctuation">(</span>cuteness<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> chip<span class="token operator">=</span>DogMicrochip<span class="token punctuation">(</span>chip_id<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> time_chipped<span class="token operator">=</span><span class="token number">10.0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>                  Cat<span class="token punctuation">(</span>breed<span class="token operator">=</span>CatBreed<span class="token punctuation">.</span>MAINE_COON<span class="token punctuation">,</span> names<span class="token operator">=</span><span class="token punctuation">(</span><span class="token string">&apos;Fluffly&apos;</span><span class="token punctuation">,</span> <span class="token string">&apos;Fluffer&apos;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> <span class="token keyword">print</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span>
+<span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token string">&apos;cuteness&apos;</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">&apos;chip&apos;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">&apos;chip_id&apos;</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">&apos;time_chipped&apos;</span><span class="token punctuation">:</span> <span class="token number">10.0</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token string">&apos;breed&apos;</span><span class="token punctuation">:</span> <span class="token string">&apos;maine_coon&apos;</span><span class="token punctuation">,</span> <span class="token string">&apos;names&apos;</span><span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token string">&apos;Fluffly&apos;</span><span class="token punctuation">,</span> <span class="token string">&apos;Fluffer&apos;</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> <span class="token keyword">print</span><span class="token punctuation">(</span>structure<span class="token punctuation">(</span>p<span class="token punctuation">,</span> List<span class="token punctuation">[</span>Union<span class="token punctuation">[</span>Dog<span class="token punctuation">,</span> Cat<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">[</span>Dog<span class="token punctuation">(</span>cuteness<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> chip<span class="token operator">=</span>DogMicrochip<span class="token punctuation">(</span>chip_id<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> time_chipped<span class="token operator">=</span><span class="token number">10.0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Cat<span class="token punctuation">(</span>breed<span class="token operator">=</span><span class="token operator">&lt;</span>CatBreed<span class="token punctuation">.</span>MAINE_COON<span class="token punctuation">:</span> <span class="token string">&apos;maine_coon&apos;</span><span class="token operator">&gt;</span><span class="token punctuation">,</span> names<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">&apos;Fluffly&apos;</span><span class="token punctuation">,</span> <span class="token string">&apos;Fluffer&apos;</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+
+</code></pre><p>As You can see, this helps to pass from low-level representation to structured data and vice versa. I used cattrs to handle input and responses. I also used attr to model all the types from the API and our implementation seems very clean compared to official APIs that struggle to implement it in a clean and readable way (<a href="https://github.com/kubernetes-client/python/tree/master/kubernetes/client/models" target="_blank" rel="noopener">check this out</a> and compare it <a href="https://github.com/aminekaabachi/azure-databricks-sdk-python/tree/master/azure_databricks_sdk_python/types" target="_blank" rel="noopener">to this</a>).</p><h2 id="My-Process-Tools"><a href="#My-Process-Tools" class="headerlink" title="My Process / Tools"></a>My Process / Tools</h2><p>The CICD process for linting, testing, publishing the package use <a href="https://docs.github.com/en/free-pro-team@latest/actions" target="_blank" rel="noopener">Github actions</a>.</p><h3 id="Developement"><a href="#Developement" class="headerlink" title="Developement"></a>Developement</h3><p>Let&#x2019;s start with a preview of the building workflow:</p><pre class=" language-yml"><code class="language-yml">
+name: Unit Tests
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - &quot;azure_databricks_sdk_python/**.py&quot;
+      - &quot;tests/**.py&quot;
+      - &quot;.github/workflows/**.yml&quot;
+      - &quot;.coveragerc&quot;
+      - &quot;requirements.txt&quot;
+      - &quot;requirements-tests.txt&quot;
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8.2
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install coveralls coverage
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-test.txt ]; then pip install -r requirements-test.txt; fi
+      - name: Run Test Suite
+        env:
+          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          DATABRICKS_INSTANCE_PREMIUM: ${{ secrets.DATABRICKS_INSTANCE_PREMIUM }}
+          PERSONAL_ACCESS_TOKEN_PREMIUM: ${{ secrets.PERSONAL_ACCESS_TOKEN_PREMIUM }}
+        run: |
+          pytest --cov azure_databricks_sdk_python --junitxml=junit/test-results.xml tests/
+      - name: Send Results to Coveralls
+        env:
+          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          DATABRICKS_INSTANCE_PREMIUM: ${{ secrets.DATABRICKS_INSTANCE_PREMIUM }}
+          PERSONAL_ACCESS_TOKEN_PREMIUM: ${{ secrets.PERSONAL_ACCESS_TOKEN_PREMIUM }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          coveralls
+
+</code></pre><p>I used <a href="https://docs.pytest.org/en/stable/contents.html" target="_blank" rel="noopener">pytest</a> and <a href="https://coveralls.io/" target="_blank" rel="noopener">coveralls</a> for the two steps. Env variables for my Azure Databricks test workspaces are provided and the values are aggregated from <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets" target="_blank" rel="noopener">Github repo secrets</a>.</p><p>I also included a workflow to automatically publish the package when a release is make:</p><pre class=" language-yml"><code class="language-yml">name: Publish to PyPI
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: &apos;3.x&apos;
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine pbr
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        TWINE_NON_INTERACTIVE: true 
+      run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
+
+</code></pre><p>It uses <a href="https://twine.readthedocs.io/en/latest/" target="_blank" rel="noopener">twine</a> to publish the package.</p><h3 id="Documentation"><a href="#Documentation" class="headerlink" title="Documentation"></a>Documentation</h3><p>I used <a href="https://www.sphinx-doc.org/en/master/" target="_blank" rel="noopener">sphinx</a> with some extensions and <a href="https://readthedocs.org/" target="_blank" rel="noopener">readthedocs.org</a>.</p><p>This screencast by <a href="https://realpython.com/team/myusuf/" target="_blank" rel="noopener">Mahdi Yusuf</a> will help you get started If you want to contribute to the docs:</p><div id="hexo-amp-id-4"><amp-iframe height="350" sandbox="allow-scripts allow-same-origin allow-popups" layout="fixed-height" frameborder="0" src="https://www.youtube-nocookie.com/embed/oJsUvBQyHBs?rel=0"><amp-img layout="fill" src="/amp-dist/sample/sample-placeholder.png" placeholder></amp-img></amp-iframe></div><h2 id="Resources"><a href="#Resources" class="headerlink" title="Resources"></a>Resources</h2><p>Please let me know what you think and You can keep up with the project through:</p><ul><li><a href="https://azure-databricks-sdk-python.readthedocs.io/en/latest/" target="_blank" rel="noopener">Docs.</a></li><li><a href="https://github.com/aminekaabachi/azure-databricks-sdk-python" target="_blank" rel="noopener">Github repository.</a></li><li><a href="https://pypi.org/project/azure-databricks-sdk-python/" target="_blank" rel="noopener">PyPi project.</a></li><li><a href="https://coveralls.io/github/aminekaabachi/azure-databricks-sdk-python?branch=master" target="_blank" rel="noopener">Coveralls.</a></li></ul>
+			  	</div>
+
+		  	</article>
+		</div>
+    <footer>
+        <section class="links">
+			Reach me via <a href="mailto:ping@kaabachi.io" rel="me">ping@kaabachi.io</a> · <a href="https://github.com/aminekaabachi" rel="me">GitHub</a> ·
+			<a href="https://www.linkedin.com/in/aminekaabachi">LinkedIn</a> ·
+			<a href="https://medium.com/@amine.kaabachi">Medium</a> ·
+			<a href=" https://dribbble.com/aminekaabachi">Dribbble</a>
+		
+			</section>
+    </footer>
+
+	</div>
+  </article>
+
+  </body>
+</html>
